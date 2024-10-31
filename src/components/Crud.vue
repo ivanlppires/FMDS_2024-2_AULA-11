@@ -10,7 +10,7 @@
                         Controle de Cliente
                     </v-toolbar-title>
                     <v-toolbar-items>
-                        <v-btn @click="dialog = true">Adicionar</v-btn>
+                        <v-btn @click="addItem">Adicionar</v-btn>
                     </v-toolbar-items>
                 </v-toolbar>
                 <v-container>
@@ -18,7 +18,7 @@
                 </v-container>
             </template>
             <template v-slot:item.action="{ item }">
-                <v-btn icon="mdi-pencil" class="mr-2" />
+                <v-btn icon="mdi-pencil" @click="editItem(item)" class="mr-2" />
                 <v-btn icon="mdi-delete" @click="remove(item.uuid)" />
             </template>
         </v-data-table-server>
@@ -90,11 +90,10 @@ const remove = async (uuid) => {
     loadItems({ page: page.value, itemsPerPage: itemsPerPage.value, sortBy: sortBy.value, search: searchName.value })
 }
 const save = () => {
-
     fetch(
         'http://localhost:5000/client',
         {
-            method: 'POST',
+            method: (client.value.uuid) ? 'PUT' : 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -112,5 +111,13 @@ const save = () => {
         }
     );
 
+}
+const editItem = (item) => {
+    client.value = { ...item }
+    dialog.value = true;
+}
+const addItem = () => {
+    client.value = {}
+    dialog.value = true;
 }
 </script>
